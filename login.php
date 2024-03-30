@@ -1,4 +1,6 @@
+
 <?php
+error_reporting(E_ALL);
 // Conexión a la base de datos MySQL
 $servername = "localhost";
 $username = "root";
