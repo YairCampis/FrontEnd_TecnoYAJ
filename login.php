@@ -1,6 +1,6 @@
-
 <?php
-error_reporting(E_ALL);
+session_start();
+
 // Conexión a la base de datos MySQL
 $servername = "localhost";
 $username = "root";
@@ -14,23 +14,35 @@ if ($conn->connect_error) {
     die("Error de conexión: " . $conn->connect_error);
 }
 
-// Obtener los datos del formulario
-$username = $_POST['email'];
-$password = $_POST['password'];
+// Obtener los datos del formulario y limpiarlos
+$username = mysqli_real_escape_string($conn, $_POST['email']);
+$password = mysqli_real_escape_string($conn, $_POST['password']);
 
-// Consulta SQL para verificar las credenciales
-$sql = "SELECT * FROM usuarios WHERE username='$username' AND password='$password'";
-$result = $conn->query($sql);
+// Consulta SQL preparada para verificar las credenciales
+$sql = "SELECT * FROM usuarios WHERE username=? LIMIT 1";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $username);
+$stmt->execute();
+$result = $stmt->get_result();
 
-// Verificar si se encontró un usuario con esas credenciales
-if ($result->num_rows > 0) {
-    // Usuario y contraseña válidos, redirigir a la página de inicio
-    header("Location: index.html");
+// Verificar si se encontró un usuario con ese nombre de usuario
+if ($result->num_rows == 1) {
+    $row = $result->fetch_assoc();
+    if (password_verify($password, $row['password'])) {
+        // Inicio de sesión exitoso, redirigir al usuario a la página de inicio
+        $_SESSION['username'] = $username;
+        header("Location: index.html");
+        exit();
+    } else {
+        // Contraseña incorrecta, mostrar mensaje de error
+        echo "Usuario y/o contraseña incorrectos";
+    }
 } else {
-    // Usuario y/o contraseña incorrectos, mostrar mensaje de error
+    // Usuario no encontrado, mostrar mensaje de error
     echo "Usuario y/o contraseña incorrectos";
 }
 
 // Cerrar la conexión
+$stmt->close();
 $conn->close();
 ?>
