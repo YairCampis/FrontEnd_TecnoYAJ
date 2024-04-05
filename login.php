@@ -5,7 +5,7 @@ session_start();
 $servername = "localhost";
 $username = "root";
 $password = "";
-$database = "proyectos_cul";
+$database = "proyectoscul";
 
 $conn = new mysqli($servername, $username, $password, $database);
 
