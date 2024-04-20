@@ -46,15 +46,15 @@ async def obtener_producto(producto_id: int):
 # Actualizar producto por ID
 @app.put("/productos/{producto_id}/")
 async def actualizar_producto(producto_id: int, producto: Producto):
-    query = "UPDATE productos SET producto = :usuario, email = :email, contraseña = :contraseña WHERE id = :id"
+    query = "UPDATE productos SET Nombre_producto = :Nombre_producto, Referencia = :Referencia, Precio = :Precio, Categoria =:Categoria, Stock_Disponible=:Stock_Disponible WHERE id = :id"
     values = {"id_Producto": producto_id, "Nombre_producto": producto.Nombre_producto, "Referencia": producto.Referencia, "Precio": producto.Precio,"Categoria": producto.Categoria,"Stock_Disponible": producto.Stock_Disponible}
     await database.execute(query=query, values=values)
     return {"message": "producto actualizado exitosamente", "data": producto}
 
-# Eliminar usuario por ID
-@app.delete("/usuarios/{usuario_id}/")
-async def eliminar_usuario(usuario_id: int):
-    query = "DELETE FROM usuarios WHERE id = :id"
-    values = {"id": usuario_id}
+# Eliminar producto por ID
+@app.delete("/productos/{producto_id}/")
+async def eliminar_producto(producto_id: int):
+    query = "DELETE FROM productos WHERE id = :id"
+    values = {"id_Producto": producto_id}
     await database.execute(query=query, values=values)
-    return {"message": "Usuario eliminado exitosamente", "usuario_id": usuario_id}
+    return {"message": "Producto eliminado exitosamente", "producto_id": producto_id}
