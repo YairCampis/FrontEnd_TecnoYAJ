@@ -4,6 +4,7 @@ from pydantic import BaseModel, EmailStr
 import mysql.connector
 
 app=FastAPI()
+
 @app.get("/")
 def endpoint():
     return {"Hola":" mundo mundial"}
